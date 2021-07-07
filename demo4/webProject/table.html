@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			p{
+				width: 100px;
+				margin: 50px auto;
+			}
+		</style>
+	</head>
+	<body>
+		<p>
+			<button class="addData">新增</button>
+		</p>
+		<table border="1" cellspacing="0" cellpadding="20" align="center">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>用户名</th>
+					<th>密码</th>
+					<th>年龄</th>
+					<th>学号</th>
+					<th>邮箱</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody id="tableData"></tbody>
+		</table>
+		<script src="js/jq.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(".addData").click(function(){
+				location.href="register.html?id=0";
+			})
+			getdata()
+			function getdata(){
+				$.ajax({
+					url:"http://localhost:3000/search_all",
+					type:"get",
+					success:function(res){
+//						console.log(res);
+						var str = '';
+						res.forEach(function(item){
+							str+=`
+								<tr>
+									<td>${item.id}</td>
+									<td>${item.username}</td>
+									<td>${item.password}</td>
+									<td>${item.age}</td>
+									<td>${item.class_id}</td>
+									<td>${item.email}</td>
+									<td>
+										<button onclick = "edit(${item.id})">编辑</button>
+										<button onclick="del(${item.id})">删除</button>
+									</td>
+								</tr>
+							`
+						})
+						$("#tableData").html(str)
+						
+					}
+				})
+			}
+//			删除事件
+			function del(val){
+				console.log(val);
+				$.ajax({
+					type:"get",
+					url:"http://localhost:3000/delete",
+					data:{
+						id:val
+					},
+					success:function(res){
+						console.log(res);
+						if(res.code==0){
+							alert("删除成功~");
+							getdata();
+						}
+					}
+				});
+			}
+			//编辑
+			function edit(val){
+				console.log(val);
+				window.location.href="register.html?id="+val;
+			}
+		</script>
+	</body>
+</html>

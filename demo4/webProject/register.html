@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				padding: 0;
+				margin: 0;
+			}
+			.form_content{
+				width: 300px;
+				margin: 100px auto;
+			}
+			.form_content>p{
+				height: 50px;
+			}
+			.form_content>p>input{
+				width: 200px;
+				height: 30px;
+				outline: none;
+				border: none;
+				border: 1px solid #d3cfcf;
+				border-radius: 5px;
+				text-indent: 1em;
+			}
+			.reg{
+				width: 85px;
+				height: 40px;
+				margin-right: 30px;
+				margin-left: 60px;
+				font-size: 16px;
+				color: #fff;
+				outline: none;
+				cursor: pointer;
+				border: none;
+				border-radius: 5px;
+				background: green;
+			}
+			.edi{
+				width: 85px;
+				height: 40px;
+				font-size: 16px;
+				color: #fff;
+				outline: none;
+				cursor: pointer;
+				border: none;
+				border-radius: 5px;
+				background: rgba(255, 187, 0, 0.91);
+			}
+		</style>
+	</head>
+	<body>
+		<form class="form_content">
+			<p>
+				用户名:
+				<input type="text" id="username" value="" />
+			</p>
+			<p>
+				密&nbsp;码:
+				<input type="text" id="pass" value="" />
+			</p>
+			<p>
+				年&nbsp;龄:
+				<input type="text" id="age" value="" />
+			</p>
+			<p>
+				学&nbsp;号:
+				<input type="text" id="xuehao" value="" />
+			</p>
+			<p>
+				邮&nbsp;箱:
+				<input type="text" id="email" value="" />
+			</p>
+			<input type="button" value="注册" id="btn" class="reg"/>
+			<input type="button" value="更新" id="update" class="edi"/>
+		</form>
+		<script src="./js/jq.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$("#btn").click(function(){
+				$.ajax({
+					type:"post",
+					url:"http://localhost:3000/register",
+					data:{
+						username:$("#username").val(),
+						password:$("#pass").val(),
+						age:$("#age").val(),
+						class_id:$("#xuehao").val(),
+						email:$("#email").val()
+					},
+					success:function(res){
+						console.log(res);
+						if(res.code==1){
+							alert("注册成功");
+							location.href="login.html"
+						}else if(res.code==2){
+							alert(res.msg);
+						}else if(res.code==-1){
+							alert(res.msg)
+						}
+					}
+				});
+			})
+			var id = parseInt(location.search.split("=")[1]);
+			console.log(id);
+			if(id){
+				$.ajax({
+					type:"get",
+					url:"http://localhost:3000/user_id",
+					data:{
+						id:id
+					},
+					success:function(res){
+						console.log(res);
+						var data = res.data[0];
+						$("#username").val(data.username);
+						$("#pass").val(data.password);
+						$("#age").val(data.age);
+						$("#xuehao").val(data.class_id);
+						$("#email").val(data.email);
+					}
+				});
+			}
+			$("#update").click(function(){
+				$.ajax({
+					type:"get",
+					url:"http://localhost:3000/user_update",
+					data:{
+						username:$("#username").val(),
+						password:$("#pass").val(),
+						age:$("#age").val(),
+						class_id:$("#xuehao").val(),
+						email:$("#email").val(),
+						id:id
+					},
+					success:function(res){
+						console.log(res);
+						if(res.code==0){
+							alert("更新成功");
+							location.href="table.html"
+						}
+					}
+					
+				});
+			})
+		</script>
+	</body>
+</html>
